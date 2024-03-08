@@ -58,6 +58,7 @@ export async function dispatchModules({
   histories = [],
   startParams = {},
   variables = {},
+  polish,
   user,
   stream = false,
   detail = false,
@@ -187,6 +188,7 @@ export async function dispatchModules({
     if (stream && detail && module.showStatus) {
       responseStatus({
         res,
+        polish,
         name: module.name,
         status: 'running'
       });
@@ -202,6 +204,7 @@ export async function dispatchModules({
       ...props,
       res,
       variables,
+      polish,
       histories,
       user,
       stream,
@@ -331,16 +334,19 @@ function loadModules(
 /* sse response modules staus */
 export function responseStatus({
   res,
+  polish,
   status,
   name
 }: {
   res: NextApiResponse;
+  polish?: boolean;
   status?: 'running' | 'finish';
   name?: string;
 }) {
   if (!name) return;
   responseWrite({
     res,
+    polish,
     event: sseResponseEventEnum.moduleStatus,
     data: JSON.stringify({
       status: 'running',
